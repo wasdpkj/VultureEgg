@@ -1,3 +1,4 @@
+//#define _DEBUG
 #define FROM Serial1
 #define SEND Serial
 #define DEBUG Serial
@@ -33,9 +34,10 @@ float egg_hum[1];
 //=============================
 int p;
 
-long read16(byte* _Buf) {
-  long r = (_Buf[p++]&0xFF);
-  r+= (_Buf[p++]&0xFF)<<8;
+int16_t read16(byte* _Buf) {
+  byte _Buf1=_Buf[p++];
+  byte _Buf2=_Buf[p++];
+  int16_t r = (_Buf1&0xff)|((_Buf2<<8)&0xff00);
   return r;
 }
 
@@ -44,10 +46,16 @@ void read_data(int _num,byte* _buf)
   p=0;
   _num=_num/2;
 
+  int16_t _bufin[_num];
+
   //  inBuf=_buf;
-  long _bufin[_num];
-  for(int i=0;i<_num;i++) {
+  for(int i=0;i<_num;i++) 
+  {
+    //    if(type==3)
+    //      _bufin_u[i]=read16(_buf);
+    //    else
     _bufin[i]=read16(_buf);
+
 #ifdef _DEBUG
     //DEBUG.print("RC[");
     //DEBUG.print(i+1);
@@ -69,44 +77,52 @@ void read_data(int _num,byte* _buf)
   switch(type)
   {
   case 1: 
-#ifdef _DEBUG
-    DEBUG.print("DATA_MPU: ");
-#endif
-    for(int a=0;a<_num;a++)
     {
 #ifdef _DEBUG
-      DEBUG.print(_bufin[a]);
-      DEBUG.print(",");
+      DEBUG.print("DATA_MPU: ");
 #endif
-      egg_mpu[a]=_bufin[a];
+      for(int a=0;a<_num;a++)
+      {
+#ifdef _DEBUG
+        DEBUG.print(_bufin[a]);
+        DEBUG.print(",");
+#endif
+        egg_mpu[a]=_bufin[a];
+      }
     }
     break;
   case 2: 
-#ifdef _DEBUG
-    DEBUG.print("DATA_TEM: ");
-#endif
-    for(int a=0;a<_num;a++)
     {
-      egg_tem[a]=_bufin[a]/16.0;
 #ifdef _DEBUG
-      DEBUG.print(egg_tem[a]);
-      if(a<_num-1)
-        DEBUG.print(",");
+      DEBUG.print("DATA_TEM: ");
 #endif
+      for(int a=0;a<_num;a++)
+      {
+        egg_tem[a]=_bufin[a]/16.0;
+#ifdef _DEBUG
+        DEBUG.print(egg_tem[a]);
+        if(a<_num-1)
+          DEBUG.print(",");
+#endif
+      }
     }
     break;
   case 3: 
-#ifdef _DEBUG
-    DEBUG.print("DATA_HUM: ");
-#endif
-    for(int a=0;a<_num;a++)
     {
-      egg_hum[a]=-6.0f + 125.0f * ((float)_bufin[a]/32768.0f);
+      uint16_t _bufin_u[_num];
 #ifdef _DEBUG
-      DEBUG.print(_bufin[a]);
-      DEBUG.print(",");
-      DEBUG.print(egg_hum[a]);
+      DEBUG.print("DATA_HUM: ");
 #endif
+      for(int a=0;a<_num;a++)
+      {
+        _bufin_u[a]=_bufin[a];
+        egg_hum[a]=-6.0f + 125.0f * (float)((float)_bufin_u[a]/(float)65535);
+#ifdef _DEBUG
+        DEBUG.print(egg_hum[a]);
+        if(a<_num-1)
+          DEBUG.print(",");
+#endif
+      }
     }
     break;
   default:
@@ -486,8 +502,8 @@ void setup()
   SEND.begin(115200);
 
   //rtc.initClock();  //set a time to start with.
-  //rtc.setDate(5, 5, 9, 0, 14);  //day, weekday, month, century(1=1900, 0=2000), year(0-99)
-  //rtc.setTime(8, 4, 30);  //hr, min, sec
+  //rtc.setDate(13, 6, 9, 0, 14);  //day, weekday, month, century(1=1900, 0=2000), year(0-99)
+  //rtc.setTime(0, 10, 30);  //hr, min, sec
 
 #ifdef _DEBUG
   DEBUG.print("\n\rUnix TimeStamp:");
@@ -750,6 +766,18 @@ void loop()
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
