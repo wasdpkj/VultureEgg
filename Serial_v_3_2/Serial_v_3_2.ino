@@ -502,8 +502,8 @@ void setup()
   SEND.begin(115200);
 
   //rtc.initClock();  //set a time to start with.
-  //rtc.setDate(13, 6, 9, 0, 14);  //day, weekday, month, century(1=1900, 0=2000), year(0-99)
-  //rtc.setTime(0, 10, 30);  //hr, min, sec
+  //rtc.setDate(30, 2, 9, 0, 14);  //day, weekday, month, century(1=1900, 0=2000), year(0-99)
+  //rtc.setTime(16, 12, 30);  //hr, min, sec
 
 #ifdef _DEBUG
   DEBUG.print("\n\rUnix TimeStamp:");
@@ -766,26 +766,3 @@ void loop()
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
