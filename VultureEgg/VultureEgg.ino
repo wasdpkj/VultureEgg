@@ -141,7 +141,7 @@ void setup()
     }
   */
 
-  if (bleCon(egg_MAC[0]))
+  if (bleCon(true, egg_MAC[0]))
   {
 #ifdef _DEBUG
     DEBUG.println("bleCon ok");
@@ -153,7 +153,6 @@ void setup()
     DEBUG.println("bleCon error");
 #endif
   }
-
 
   while (SEND.available())
   {
@@ -340,7 +339,7 @@ void loop()
       else
         egg_num = 0;
 
-      if (!bleCon(egg_MAC[egg_num]))
+      if (!bleCon(true, egg_MAC[egg_num]))
       {
 #ifdef _DEBUG
         DEBUG.print("\n\r[");

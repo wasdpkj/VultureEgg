@@ -5,7 +5,7 @@
 #define SEND Serial
 #define DEBUG Serial
 
-//#define SET_RTC 10, 10, 33, 13, 6, 2015  //Hour,Minute,Second,Day,Month,Year
+//#define SET_RTC 16, 33, 33, 27, 8, 2015  //Hour,Minute,Second,Day,Month,Year
 
 //-------------------------
 #define egg_num_MAX 1

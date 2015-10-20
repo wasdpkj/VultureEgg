@@ -96,34 +96,42 @@ bool bleBaud_speed(int _speed)
   return false;
 }
 
-bool bleCon(char* _MAC)
+bool bleCon(bool _STA, char* _MAC)
 {
-  FROM.print("AT+ROLE1");
-  if (ble_check("Set:1"))
+  if (_STA)
   {
-    FROM.print("AT+IMME1");
+    FROM.print("AT+CONNL");
+    return true;
+  }
+  else
+  {
+    FROM.print("AT+ROLE1");
     if (ble_check("Set:1"))
     {
-      if (bleReset())
+      FROM.print("AT+IMME1");
+      if (ble_check("Set:1"))
       {
-        FROM.print("AT+CON");
-        FROM.print(_MAC);
-        if (ble_check("CONNA"))
-          return true;
+        if (bleReset())
+        {
+          FROM.print("AT+CON");
+          FROM.print(_MAC);
+          if (ble_check("CONNA"))
+            return true;
+        }
+        else
+          return false;
       }
       else
         return false;
+
+
+      delay(500);
+      FROM.print("AT+RESET");
+      delay(2000);
     }
     else
       return false;
-
-
-    delay(500);
-    FROM.print("AT+RESET");
-    delay(2000);
   }
-  else
-    return false;
 }
 
 void bleInit()
